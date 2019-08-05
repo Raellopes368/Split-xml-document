@@ -1,0 +1,26 @@
+{
+  "name": "split-xml-document",
+  "version": "1.0.0",
+  "description": "Faz o download dos arquivos bz2 ,os descompacta e divide ao meio montando dois arquivos menores",
+  "main": "index.js",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
+    "inly": "^3.0.3",
+    "request": "^2.88.0",
+    "split-at": "^2.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Raellopes368/Split-xml-document.git"
+  },
+  "author": "Israel Lopes",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Raellopes368/Split-xml-document/issues"
+  },
+  "homepage": "https://github.com/Raellopes368/Split-xml-document#readme"
+}
