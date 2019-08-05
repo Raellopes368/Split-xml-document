@@ -1,4 +1,4 @@
-Primeiro criar uma pasta chamada downloads e outra dataset2 executar downloads.js ,
+Primeiro criar uma pasta chamada downloads e outra dataset2,depois executar downloads.js ,
 vai retornar uma lista com todos os arquivos para download,
 após isso,descomente download(lista[posicao]) e passe a posição 
 do arquivo que deseja fazer o download.
