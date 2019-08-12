@@ -1,0 +1,35 @@
+const fs = require("fs");
+const request = require("request");
+const cheerio = require("cheerio");
+
+function getListDownloads(callback) {
+  const arquivos = [];
+  request(
+    "https://dumps.wikimedia.org/ptwiki/20190801/",
+    (error, response, body) => {
+      const $ = cheerio.load(body);
+
+      $("a").each(function() {
+        if (
+          $(this)
+            .text()
+            .includes(".bz2")
+        ) {
+          if (
+            !$(this)
+              .text()
+              .includes("txt")
+          ) {
+            arquivos.push($(this).text());
+          }
+        }
+      });
+      callback(arquivos);
+    }
+  );
+}
+
+getListDownloads(async lista => {
+  await fs.writeFileSync(__dirname + "/lista/lista.txt", lista);
+  console.log("Arquivo gerado lista.txt");
+});

@@ -1,41 +1,34 @@
 const fs = require("fs");
-const cheerio = require("cheerio");
-const request = require("request");
+const download = require("download");
 
-function download(arquivo) {
-  request("https://dumps.wikimedia.org/ptwiki/20190801/" + arquivo).pipe(
-    fs.createWriteStream("./downloads/" + arquivo)
+// function Download(arquivo) {
+//   download("https://dumps.wikimedia.org/ptwiki/20190801/" + arquivo).then(
+//     data => {
+//       fs.writeFileSync(__dirname + "/downloads/" + arquivo, data);
+//       console.log("Download concluido, arquivo " + arquivo);
+//     }
+//   );
+// }
+async function Download(arquivo) {
+  const data = await download(
+    "https://dumps.wikimedia.org/ptwiki/20190801/" + arquivo
   );
+  await fs.writeFileSync(__dirname + "/downloads/" + arquivo, data);
+  console.log("Download concluido, arquivo " + arquivo);
+  return arquivo;
 }
 
-const getListDownloads = async callback => {
-  const arquivos = [];
-  request(
-    "https://dumps.wikimedia.org/ptwiki/20190801/",
-    (error, response, body) => {
-      const $ = cheerio.load(body);
+function abreLista() {
+  let data = fs.readFileSync(__dirname + "/lista/lista.txt", "utf-8");
+  return data;
+}
 
-      $("a").each(function() {
-        if (
-          $(this)
-            .text()
-            .includes(".bz2")
-        ) {
-          if (
-            !$(this)
-              .text()
-              .includes("txt")
-          ) {
-            arquivos.push($(this).text());
-          }
-        }
-      });
-      callback(arquivos);
-    }
-  );
-};
+const data = abreLista();
+const lista = data.split(",");
 
-getListDownloads(lista => {
-  console.log(lista);
-  //download(lista[posição])
-});
+(async () => {
+  for (const arquivo of lista) {
+    await Download(arquivo);
+    console.log("Baixando o próximo arquivo!");
+  }
+})();
