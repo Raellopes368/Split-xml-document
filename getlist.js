@@ -16,7 +16,10 @@ function getListDownloads(callback) {
             .includes(".bz2") &&
           $(this)
             .text()
-            .match(".multistream")
+            .match(".multistream") &&
+          $(this)
+            .text()
+            .match(/xml\-p\d{1,}/)
         ) {
           if (
             !$(this)
