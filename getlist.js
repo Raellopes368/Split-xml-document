@@ -13,7 +13,10 @@ function getListDownloads(callback) {
         if (
           $(this)
             .text()
-            .includes(".bz2")
+            .includes(".bz2") &&
+          $(this)
+            .text()
+            .match(".multistream")
         ) {
           if (
             !$(this)
