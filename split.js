@@ -6,13 +6,15 @@ const cwd = __dirname;
 async function readArq(arq) {
   return new Promise(async (resolve, reject) => {
     let configInicial = "";
+    let totalPage = 0;
+    let totalArquivo = 1;
     let config = false;
     let archive = "";
     let arquivoCompleto = "";
     let pages = 0;
     let arquivo = arq.replace(".bz2", "");
     let indice = 0;
-    let arquivoGerado = "";
+    let arquivos = [];
     //abre o arquivo wikipedia.part_20.xml
     const rl = readline.createInterface({
       input: fs.createReadStream(cwd + "/dataset2/" + arquivo)
@@ -26,37 +28,51 @@ async function readArq(arq) {
           config = true;
         }
       } else {
-        if (pages <= 50000) {
+        if (pages <= 100000) {
           archive = archive.concat(line);
           if (line.match(/\<\/page\>/)) {
             pages++;
+            totalPage++;
           }
           if (line.match(/\<\/mediawiki\>/)) {
-            pages = 50001;
+            console.log("Arquivo chegou ao final e foi salvo");
+            arquivoCompleto = arquivoCompleto
+              .concat(configInicial)
+              .concat(archive + "</mediawiki>");
+            arquivos.push(arquivoCompleto);
+            pages = 0;
+            arquivoCompleto = "";
+            archive = "";
           }
         } else {
-          arquivoCompleto += configInicial.concat(archive + "</mediawiki>");
-          await salvaArquivo(arquivoCompleto, indice);
+          arquivoCompleto = arquivoCompleto
+            .concat(configInicial)
+            .concat(archive + "</mediawiki>");
+          arquivos.push(arquivoCompleto);
+          pages = 0;
+          console.log("pagina " + totalArquivo);
+          totalArquivo++;
           arquivoCompleto = "";
           archive = "";
-          indice++;
-          pages = 0;
+          return false;
         }
       }
     });
     // evento executado após ler todas as linhas do arquivo:
-    rl.on("close", () => {
-      console.log("Arquivos gerados");
+    rl.on("close", async () => {
+      console.log(totalPage);
+      for (let arquivo of arquivos) {
+        await salvaArquivo(arquivo, indice);
+        console.log("Um arquivo gerado wikipedia.part_" + indice + ".xml");
+        console.log("Com um tamanho de " + arquivo.length);
+        indice++;
+      }
     });
   });
 }
 
-(async () => {
-  await readArq("ptwiki-20190801-pages-articles-multistream4.xml");
-})();
-
-function salvaArquivo(arq, index) {
-  return fs.writeFileSync(
+async function salvaArquivo(arq, index) {
+  await fs.writeFileSync(
     cwd + "/dataset2/wikipedia.part_" + index + ".xml",
     arq
   );
@@ -70,11 +86,10 @@ function abreLista() {
 const data = abreLista();
 const lista = data.split(",");
 
-// (async () => {
-//   let x = 0;
-//   for (const arquivo of lista) {
-//     await geraArquivos(arquivo, x);
-//     console.log(x);
-//     x += 2;
-//   }
-// })();
+(async () => {
+  let x = 0;
+  for (const arquivo of lista) {
+    await geraArquivos(arquivo, x);
+    x += 5;
+  }
+})();
