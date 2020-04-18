@@ -5,7 +5,7 @@ const cheerio = require("cheerio");
 function getListDownloads(callback) {
   const arquivos = [];
   request(
-    "https://dumps.wikimedia.org/ptwiki/20190801/",
+    "https://dumps.wikimedia.org/ptwiki/20200401/",
     (error, response, body) => {
       const $ = cheerio.load(body);
 

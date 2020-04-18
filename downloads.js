@@ -11,7 +11,7 @@ const download = require("download");
 // }
 async function Download(arquivo) {
   const data = await download(
-    "https://dumps.wikimedia.org/ptwiki/20190801/" + arquivo
+    "https://dumps.wikimedia.org/ptwiki/20200401/" + arquivo
   );
   await fs.writeFileSync(__dirname + "/downloads/" + arquivo, data);
   console.log("Download concluido, arquivo " + arquivo);
