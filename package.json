@@ -5,7 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
-    "decompress": "^4.2.0",
+    "decompress": "^4.2.1",
     "decompress-bzip2": "^4.0.0",
     "download": "^7.1.0",
     "inly": "^3.0.3",
