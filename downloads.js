@@ -10,8 +10,9 @@ const download = require("download");
 //   );
 // }
 async function Download(arquivo) {
+  const url = process.argv[2];
   const data = await download(
-    "https://dumps.wikimedia.org/ptwiki/20200401/" + arquivo
+    url + '/' + arquivo
   );
   await fs.writeFileSync(__dirname + "/downloads/" + arquivo, data);
   console.log("Download concluido, arquivo " + arquivo);
