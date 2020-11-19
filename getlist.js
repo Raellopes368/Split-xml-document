@@ -3,9 +3,10 @@ const request = require("request");
 const cheerio = require("cheerio");
 
 function getListDownloads(callback) {
+  const url = process.argv[2];
   const arquivos = [];
   request(
-    "https://dumps.wikimedia.org/ptwiki/20200401/",
+    url,
     (error, response, body) => {
       const $ = cheerio.load(body);
 
