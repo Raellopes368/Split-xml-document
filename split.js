@@ -23,7 +23,7 @@ async function readArq(arq) {
           config = true;
         }
       } else {
-        if (pages <= 30000) {
+        if (pages <= 50000) {
           archive = archive.concat(line).concat("\n");
           if (line.match(/\<\/page\>/)) {
             pages++;
