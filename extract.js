@@ -1,46 +1,41 @@
-/**
- *  Faz o download dos arquivos,descompacta e gera dois arquivos com a nomeação no formato wikipedia.part_x.xml
- */
-
 const inly = require("inly");
-const path = require("path");
+const { resolve } = require("path");
 const fs = require("fs");
-const cwd = __dirname;
 
-async function extraiArquivo(name) {
-  return new Promise(async (resolve, reject) => {
-    const to = cwd + "/dataset2";
-    const from = path.join(cwd + "/downloads", name);
-    const extract = inly(from, to);
+async function extractFile(name) {
+  return new Promise(async (resolver) => {
+    const path = resolve(__dirname, 'extracts');
+    if(!fs.existsSync(path)){
+      fs.mkdirSync(path);
+    }
 
-    extract.on("file", name => {
-      console.log("Arquivo descompactado " + name);
-    });
-
-    extract.on("progress", percent => {
-      console.log(percent + "%");
-    });
-
-    extract.on("error", error => {
-      reject(error);
-    });
+    const from = resolve(__dirname, 'downloads', name);
+    const extract = inly(from, path);
 
     extract.on("end", () => {
       console.log("Concluido com sucesso ");
-      resolve();
+      resolver();
     });
+
   });
 }
-function abreLista() {
-  let data = fs.readFileSync(__dirname + "/lista/lista.txt", "utf-8");
-  return data;
+// function abreLista() {
+//   let data = fs.readFileSync(__dirname + "/lista/lista.txt", "utf-8");
+//   return data;
+// }
+
+// const data = abreLista();
+// const lista = data.split(",");
+
+// (async () => {
+//   for (const arquivo of lista) {
+//     await extraiArquivo(arquivo);
+//   }
+// })();
+
+
+module.exports = async function extractAll(data, index){
+  if(index === data.length) return;
+  await extractFile(data[index]);
+  await extractAll(data, index + 1);
 }
-
-const data = abreLista();
-const lista = data.split(",");
-
-(async () => {
-  for (const arquivo of lista) {
-    await extraiArquivo(arquivo);
-  }
-})();

@@ -1,42 +1,30 @@
-const fs = require("fs");
 const request = require("request");
 const cheerio = require("cheerio");
+const { promisify } = require('util');
 
-function getListDownloads(callback) {
-  const url = process.argv[2];
-  const arquivos = [];
-  request(
-    url,
-    (error, response, body) => {
-      const $ = cheerio.load(body);
+module.exports = function getListDownloads(url) {
+  return new Promise(async (resolve, reject)=>{
+    const data = [];
+    try {
+      const req = promisify(request);
 
-      $("a").each(function() {
-        if (
-          $(this)
-            .text()
-            .includes(".bz2") &&
-          $(this)
-            .text()
-            .match(".multistream") &&
-          $(this)
-            .text()
-            .match(/xml\-p\d{1,}/)
-        ) {
-          if (
-            !$(this)
-              .text()
-              .includes("txt")
+      const { body } = await req(url);
+      const cher = cheerio.load(body);
+      cher('a').each( function(){
+        const text = cher(this).text();
+        if (text.includes(".bz2") &&
+            text.match(".multistream") &&
+            text.match(/xml\-p\d{1,}/) && 
+            !text.match(/txt/)
           ) {
-            arquivos.push($(this).text());
+            data.push(text);
           }
-        }
+          resolve(data);
       });
-      callback(arquivos);
+
+    } catch (error) {
+      reject(error);
     }
-  );
+  });
 }
 
-getListDownloads(async lista => {
-  await fs.writeFileSync(__dirname + "/lista/lista.txt", lista);
-  console.log("Arquivo gerado lista.txt");
-});
