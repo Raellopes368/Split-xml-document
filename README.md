@@ -7,14 +7,16 @@
 ```npm install ``` ou 
 ```yarn```
 
+Configure o .env
+
 ## execução
 
 rode 
 
-```npm run start {url}```
+com npm:
+```npm run start```
 ou
+com yarn:
+```yarn start```
 
-```yarn start {url}```
-
-url<> String
 
